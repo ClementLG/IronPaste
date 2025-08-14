@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="paste-view">
+    <div id="unlock-form" class="hidden">
+        <h3>This paste is encrypted.</h3>
+        <p>Please enter the password to decrypt it locally in your browser.</p>
+        <input type="password" id="unlock-password" placeholder="Password">
+        <button id="unlock-btn">Unlock</button>
+        <p id="error-message" class="hidden"></p>
+    </div>
+
+    <div id="paste-content-area" class="hidden">
+        <pre><code id="paste-content"></code></pre>
+    </div>
+
+    <div id="loading-state">
+        <p>Fetching encrypted data...</p>
+    </div>
+</div>
+{% endblock %}

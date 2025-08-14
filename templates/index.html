@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="paste-form">
+    <textarea id="content-input" placeholder="Paste your text, code, or logs here..."></textarea>
+    
+    <div class="options">
+        <div class="option-group">
+            <label for="expiration-select">Auto-delete after:</label>
+            <select id="expiration-select">
+                <option value="3600">1 Hour</option>
+                <option value="86400">1 Day</option>
+                <option value="604800">1 Week</option>
+                <option value="2592000">1 Month</option>
+                <option value="0">Never</option>
+            </select>
+        </div>
+        
+        <div class="option-group">
+            <label for="password-input">Password (optional):</label>
+            <input type="password" id="password-input" placeholder="Leave blank for a public paste">
+        </div>
+    </div>
+
+    <button id="create-btn">Create Paste</button>
+</div>
+
+<div id="result" class="hidden">
+    <h3>Paste Created!</h3>
+    <p>Share this URL. You can choose whether to include the password in the copied link.</p>
+    <input type="text" id="result-url" readonly>
+    
+    <div id="include-password-container" class="hidden" style="margin-top: 0.5rem;">
+        <input type="checkbox" id="include-password-checkbox" checked>
+        <label for="include-password-checkbox">Include password in the copied URL</label>
+    </div>
+    
+    <button id="copy-btn" style="margin-top: 0.5rem;">Copy URL</button>
+</div>
+{% endblock %}
