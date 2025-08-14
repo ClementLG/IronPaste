@@ -1,20 +1,16 @@
 // ironpaste/static/js/main.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup for the paste creation page
   const createBtn = document.getElementById('create-btn');
   if (createBtn) {
     createBtn.addEventListener('click', handleCreatePaste);
   }
 
-  // Setup for the paste view page
   const pasteView = document.getElementById('paste-view');
   if (pasteView) {
     loadPaste();
   }
 
-  // Setup for the "Copy URL" button
-  // We attach this listener only once when the page loads for stability.
   const copyBtn = document.getElementById('copy-btn');
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
@@ -28,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let urlToCopy = resultUrlInput.value;
 
-        // If the checkbox exists and is unchecked, copy the URL without the password
         if (includePasswordCheckbox && !includePasswordCheckbox.checked) {
             urlToCopy = urlToCopy.split('#')[0];
         }
@@ -53,10 +48,12 @@ async function handleCreatePaste() {
   const contentInput = document.getElementById('content-input');
   const passwordInput = document.getElementById('password-input');
   const expirationSelect = document.getElementById('expiration-select');
+  const burnCheckbox = document.getElementById('burn-after-reading-checkbox');
   
   const content = contentInput.value;
   const password = passwordInput.value;
   const expiration = expirationSelect.value;
+  const maxReads = burnCheckbox.checked ? 1 : null;
 
   if (!content.trim()) {
     alert('Content cannot be empty.');
@@ -77,7 +74,8 @@ async function handleCreatePaste() {
       body: JSON.stringify({
         content: contentToSend,
         expiration: expiration === "0" ? null : parseInt(expiration, 10),
-        isEncrypted: isEncrypted
+        isEncrypted: isEncrypted,
+        maxReads: maxReads
       }),
     });
     
@@ -106,7 +104,6 @@ function displayResult(url, password) {
     const includePasswordContainer = document.getElementById('include-password-container');
     const includePasswordCheckbox = document.getElementById('include-password-checkbox');
     
-    // Defensive check to prevent errors if HTML is malformed.
     if (!pasteForm || !resultDiv || !resultUrlInput || !includePasswordContainer || !includePasswordCheckbox) {
         console.error("Critical Error: One or more UI elements for displaying the result are missing from index.html. Please check for typos in the element IDs.");
         alert("A critical error occurred. Please check the developer console (F12) for details.");

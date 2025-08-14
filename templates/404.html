@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block title %}404 Not Found{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>404 - Page Not Found</h1>
+    <p>The paste you are looking for does not exist or has expired.</p>
+    <a href="{{ url_for('index') }}" class="button">Create a new paste</a>
+</div>
+{% endblock %}

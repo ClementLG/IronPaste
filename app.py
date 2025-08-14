@@ -37,6 +37,7 @@ def create_paste():
     new_paste = Paste(id=generate_id())
     new_paste.encrypted_content = data.get('content')
     new_paste.is_encrypted = data.get('isEncrypted', False)
+    new_paste.max_reads = data.get('maxReads')
 
     expires_in_seconds = data.get('expiration')
     if expires_in_seconds:
@@ -57,32 +58,57 @@ def view_paste_page(paste_id):
     paste = Paste.query.get(paste_id)
     if not paste:
         abort(404)
-
-    if paste.expires_at:
-        expires_at_aware = paste.expires_at.replace(tzinfo=timezone.utc)
-        if expires_at_aware < datetime.now(timezone.utc):
-            db.session.delete(paste)
-            db.session.commit()
-            abort(404, "This paste has expired and was deleted.")
-
     return render_template('view.html', paste_id=paste_id)
 
 @app.route('/api/get/<paste_id>')
 def get_paste_data(paste_id):
-    """API endpoint to fetch the raw paste data."""
+    """API endpoint to fetch the raw paste data and apply expiration logic."""
     paste = Paste.query.get_or_404(paste_id)
 
-    if paste.expires_at:
-        expires_at_aware = paste.expires_at.replace(tzinfo=timezone.utc)
-        if expires_at_aware < datetime.now(timezone.utc):
-            db.session.delete(paste)
-            db.session.commit()
-            abort(404)
+    # 1. Check time-based expiration
+    if paste.expires_at and paste.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        db.session.delete(paste)
+        db.session.commit()
+        abort(404)
     
-    return jsonify({
+    # 2. Check read-based expiration
+    if paste.max_reads is not None and paste.read_count >= paste.max_reads:
+        db.session.delete(paste)
+        db.session.commit()
+        abort(404)
+
+    # If valid, prepare the content to be returned
+    content_to_return = {
         'content': paste.encrypted_content,
         'is_encrypted': paste.is_encrypted
-    })
+    }
+
+    # 3. Increment read count or delete if it's the final read
+    if paste.max_reads is not None:
+        if paste.read_count + 1 >= paste.max_reads:
+            db.session.delete(paste)
+        else:
+            paste.read_count += 1
+    
+    db.session.commit()
+
+    return jsonify(content_to_return)
+
+@app.errorhandler(400)
+def bad_request_error(error):
+    """Serves the 400 error page."""
+    return render_template('400.html'), 400
+
+@app.errorhandler(404)
+def not_found_error(error):
+    """Serves the 404 error page."""
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Serves the 500 error page."""
+    db.session.rollback()
+    return render_template('500.html'), 500
 
 @app.cli.command("init-db")
 def init_db_command():
