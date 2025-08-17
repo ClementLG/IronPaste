@@ -1,20 +1,31 @@
 {% extends "layout.html" %}
 {% block content %}
 <div id="paste-view">
-    <div id="unlock-form" class="hidden">
-        <h3>This paste is encrypted.</h3>
-        <p>Please enter the password to decrypt it locally in your browser.</p>
-        <input type="password" id="unlock-password" placeholder="Password">
-        <button id="unlock-btn">Unlock</button>
-        <p id="error-message" class="hidden"></p>
+    <div id="unlock-form" class="is-hidden">
+        <div class="notification is-warning">
+            <h3 class="title is-4">This paste is encrypted.</h3>
+            <p>Please enter the password to decrypt it locally in your browser.</p>
+        </div>
+        <div class="field">
+            <div class="control">
+                <input type="password" id="unlock-password" class="input" placeholder="Password">
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <button id="unlock-btn" class="button is-primary">Unlock</button>
+            </div>
+        </div>
+        <p id="error-message" class="help is-danger is-hidden"></p>
     </div>
 
-    <div id="paste-content-area" class="hidden">
+    <div id="paste-content-area" class="box content is-hidden">
         <pre><code id="paste-content"></code></pre>
     </div>
 
     <div id="loading-state">
-        <p>Fetching encrypted data...</p>
+        <progress class="progress is-large is-info" max="100">60%</progress>
+        <p class="has-text-centered">Fetching encrypted data...</p>
     </div>
 </div>
 {% endblock %}

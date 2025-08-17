@@ -4,22 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IronPaste - Secure Pastebin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
 </head>
 <body data-paste-id="{{ paste_id or '' }}">
-    <div class="container">
-        <header>
-            <h1><a href="/">IronPaste</a></h1>
-            <p>Zero-Knowledge Pastebin</p>
-        </header>
-        <main>
-            {% block content %}{% endblock %}
-        </main>
-        <footer>
+    <section class="section">
+        <div class="container">
+            <header class="has-text-centered mb-5">
+                <h1 class="title"><a href="/">IronPaste</a></h1>
+                <p class="subtitle">Zero-Knowledge Pastebin</p>
+            </header>
+            <main>
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="content has-text-centered">
             <p>All encryption is done in your browser. The server never sees your secrets.</p>
-        </footer>
-    </div>
+        </div>
+    </footer>
 
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script src="{{ url_for('static', filename='js/crypto.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

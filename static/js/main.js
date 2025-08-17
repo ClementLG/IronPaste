@@ -107,26 +107,26 @@ function displayResult(url, password) {
         return;
     }
 
-    pasteForm.classList.add('hidden');
-    resultDiv.classList.remove('hidden');
+    if (pasteForm) pasteForm.classList.add('is-hidden');
+    if (resultDiv) resultDiv.classList.remove('is-hidden');
     resultUrlInput.value = url;
 
     if (password && password.length > 0) {
-        includePasswordContainer.classList.remove('hidden');
+        includePasswordContainer.classList.remove('is-hidden');
         includePasswordCheckbox.checked = false; // Default to not including password
-        passwordWarning.classList.add('hidden');
+        passwordWarning.classList.add('is-hidden');
 
         includePasswordCheckbox.addEventListener('change', () => {
             if (includePasswordCheckbox.checked) {
                 resultUrlInput.value = `${url}#${password}`;
-                passwordWarning.classList.remove('hidden');
+                passwordWarning.classList.remove('is-hidden');
             } else {
                 resultUrlInput.value = url;
-                passwordWarning.classList.add('hidden');
+                passwordWarning.classList.add('is-hidden');
             }
         });
     } else {
-        includePasswordContainer.classList.add('hidden');
+        includePasswordContainer.classList.add('is-hidden');
     }
 }
 
@@ -151,8 +151,8 @@ async function loadPaste() {
 
         if (!isEncrypted) {
             pasteContentEl.textContent = content;
-            loadingState.classList.add('hidden');
-            pasteContentArea.classList.remove('hidden');
+            loadingState.classList.add('is-hidden');
+            pasteContentArea.classList.remove('is-hidden');
             return;
         }
         
@@ -164,8 +164,8 @@ async function loadPaste() {
             
             if (plaintext !== null) {
                 pasteContentEl.textContent = plaintext;
-                loadingState.classList.add('hidden');
-                pasteContentArea.classList.remove('hidden');
+                loadingState.classList.add('is-hidden');
+                pasteContentArea.classList.remove('is-hidden');
             } else {
                 alert('The key in the URL is incorrect. Please enter the correct password.');
                 window.location.hash = '';
@@ -182,9 +182,9 @@ async function loadPaste() {
 }
 
 function showUnlockForm(encryptedContent) {
-    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('loading-state').classList.add('is-hidden');
     const unlockForm = document.getElementById('unlock-form');
-    unlockForm.classList.remove('hidden');
+    unlockForm.classList.remove('is-hidden');
     
     const unlockBtn = document.getElementById('unlock-btn');
     const unlockPasswordInput = document.getElementById('unlock-password');
@@ -198,11 +198,11 @@ function showUnlockForm(encryptedContent) {
         
         if (plaintext !== null) {
             document.getElementById('paste-content').textContent = plaintext;
-            unlockForm.classList.add('hidden');
-            document.getElementById('paste-content-area').classList.remove('hidden');
+            unlockForm.classList.add('is-hidden');
+            document.getElementById('paste-content-area').classList.remove('is-hidden');
         } else {
             errorMessage.textContent = 'Incorrect password. Please try again.';
-            errorMessage.classList.remove('hidden');
+            errorMessage.classList.remove('is-hidden');
             unlockPasswordInput.focus();
         }
     });

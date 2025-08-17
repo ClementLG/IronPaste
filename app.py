@@ -18,9 +18,17 @@ def create_app(config_name='default'):
 
     # Disable HTTPS forcing in development for Talisman
     if app.config['DEBUG']:
-        Talisman(app, force_https=False)
+        csp = {
+            'default-src': '\'self\'',
+            'img-src': ['\'self\'', 'data:']
+        }
+        Talisman(app, force_https=False, content_security_policy=csp)
     else:
-        Talisman(app)
+        csp = {
+            'default-src': '\'self\'',
+            'img-src': ['\'self\'', 'data:']
+        }
+        Talisman(app, content_security_policy=csp)
 
     return app
 

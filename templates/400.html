@@ -3,9 +3,10 @@
 {% block title %}400 Bad Request{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>400 - Bad Request</h1>
+<div class="has-text-centered">
+    <h1 class="title is-1">400</h1>
+    <p class="subtitle is-3">Bad Request</p>
     <p>The request could not be understood by the server due to malformed syntax.</p>
-    <a href="{{ url_for('index') }}" class="button">Create a new paste</a>
+    <a href="{{ url_for('index') }}" class="button is-primary mt-4">Create a new paste</a>
 </div>
 {% endblock %}

@@ -1,50 +1,82 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="paste-form">
-    <textarea id="content-input" placeholder="Paste your text, code, or logs here..."></textarea>
-    
-    <div class="options">
-        <div class="option-group">
-            <label for="expiration-select">Auto-delete after:</label>
-            <select id="expiration-select">
-                <option value="3600">1 Hour</option>
-                <option value="86400">1 Day</option>
-                <option value="604800">1 Week</option>
-                <option value="2592000">1 Month</option>
-                <option value="0">Never</option>
-            </select>
+    <div class="field">
+        <div class="control">
+            <textarea id="content-input" class="textarea" placeholder="Paste your text, code, or logs here..."></textarea>
         </div>
-        
-        <div class="option-group">
-            <label>Deletion Condition:</label>
-            <div class="checkbox-container">
-                <input type="checkbox" id="burn-after-reading-checkbox">
-                <label for="burn-after-reading-checkbox">Burn after reading</label>
+    </div>
+    
+    <div class="columns is-variable is-2">
+        <div class="column">
+            <div class="field">
+                <label for="expiration-select" class="label">Auto-delete after:</label>
+                <div class="control">
+                    <div class="select is-fullwidth">
+                        <select id="expiration-select">
+                            <option value="3600">1 Hour</option>
+                            <option value="86400">1 Day</option>
+                            <option value="604800">1 Week</option>
+                            <option value="2592000">1 Month</option>
+                            <option value="0">Never</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <div class="option-group">
-            <label for="password-input">Password (optional):</label>
-            <input type="password" id="password-input" placeholder="Leave blank for a public paste">
+        <div class="column">
+            <div class="field">
+                <label class="label">Deletion Condition:</label>
+                <div class="control">
+                    <label class="checkbox">
+                        <input type="checkbox" id="burn-after-reading-checkbox">
+                        Burn after reading
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="column is-half">
+            <div class="field">
+                <label for="password-input" class="label">Password (optional):</label>
+                <div class="control">
+                    <input type="password" id="password-input" class="input" placeholder="Leave blank for a public paste">
+                </div>
+            </div>
         </div>
     </div>
 
-    <button id="create-btn">Create Paste</button>
+    <div class="field">
+        <div class="control">
+            <button id="create-btn" class="button is-primary is-fullwidth">Create Paste</button>
+        </div>
+    </div>
 </div>
 
-<div id="result" class="hidden">
-    <h3>Paste Created!</h3>
+<div id="result" class="notification is-success is-light is-hidden">
+    <h3 class="title is-4">Paste Created!</h3>
     <p>Share this URL. You can choose whether to include the password in the copied link.</p>
-    <input type="text" id="result-url" readonly>
+    <div class="field">
+        <div class="control">
+            <input type="text" id="result-url" class="input" readonly>
+        </div>
+    </div>
     
-    <div id="include-password-container" class="hidden" style="margin-top: 0.5rem;">
-        <input type="checkbox" id="include-password-checkbox">
-        <label for="include-password-checkbox">Include password in URL (less secure)</label>
-        <p id="password-warning" class="hidden warning-text">
+    <div id="include-password-container" class="is-hidden mt-3">
+        <label class="checkbox">
+            <input type="checkbox" id="include-password-checkbox">
+            Include password in URL (less secure)
+        </label>
+        <p id="password-warning" class="help is-warning is-hidden">
             Warning: Including the password in the URL is convenient but less secure. It may be stored in browser history or server logs.
         </p>
     </div>
     
-    <button id="copy-btn" style="margin-top: 0.5rem;">Copy URL</button>
+    <div class="field mt-3">
+        <div class="control">
+            <button id="copy-btn" class="button is-info">Copy URL</button>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -3,9 +3,10 @@
 {% block title %}500 Internal Server Error{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>500 - Internal Server Error</h1>
+<div class="has-text-centered">
+    <h1 class="title is-1">500</h1>
+    <p class="subtitle is-3">Internal Server Error</p>
     <p>Something went wrong on our end. Please try again later.</p>
-    <a href="{{ url_for('index') }}" class="button">Go back to homepage</a>
+    <a href="{{ url_for('index') }}" class="button is-primary mt-4">Go back to homepage</a>
 </div>
 {% endblock %}
