@@ -1,11 +1,15 @@
 services:
   ironpaste:
     build: .
-    ports:
-      - "5005:5005"
+    #ports:
+      #- "5005:5005" # to expose on your host
     volumes:
       - .:/app
     environment:
       - FLASK_DEBUG=0
       - FLASK_CONFIG=production
       - DATABASE_URL=sqlite:////app/instance/prod.db
+    command: >
+      sh -c "mkdir -p instance &&
+             flask db upgrade &&
+             gunicorn --bind 0.0.0.0:5005 app:app"
