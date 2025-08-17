@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IronPaste - Secure Pastebin</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body data-paste-id="{{ paste_id or '' }}">
     <section class="section">
@@ -23,6 +24,14 @@
     <footer class="footer">
         <div class="content has-text-centered">
             <p>All encryption is done in your browser. The server never sees your secrets.</p>
+            <p>
+                <a href="https://github.com/ClementLG/IronPaste" target="_blank" rel="noopener noreferrer" class="icon is-large" aria-label="GitHub Repository">
+                    <i class="fab fa-github fa-2x"></i>
+                </a>
+                <a href="/about" target="_blank" rel="noopener noreferrer" class="icon is-large" aria-label="About this project">
+                    <i class="fas fa-info-circle fa-2x"></i>
+                </a>
+            </p>
         </div>
     </footer>
 

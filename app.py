@@ -4,8 +4,12 @@ import os
 import string
 import random
 from datetime import datetime, timedelta, timezone
+import bleach
 from flask import Flask, render_template, request, jsonify, abort
 from flask_talisman import Talisman
+from pygments import highlight
+from pygments.lexers import get_lexer_by_name, guess_lexer
+from pygments.formatters import HtmlFormatter
 from database import db, Paste
 from config import config_by_name
 
@@ -20,12 +24,16 @@ def create_app(config_name='default'):
     if app.config['DEBUG']:
         csp = {
             'default-src': '\'self\'',
+            'style-src-elem': ['\'self\'', 'https://cdnjs.cloudflare.com'],
+            'font-src': ['\'self\'', 'https://cdnjs.cloudflare.com'],
             'img-src': ['\'self\'', 'data:']
         }
         Talisman(app, force_https=False, content_security_policy=csp)
     else:
         csp = {
             'default-src': '\'self\'',
+            'style-src-elem': ['\'self\'', 'https://cdnjs.cloudflare.com'],
+            'font-src': ['\'self\'', 'https://cdnjs.cloudflare.com'],
             'img-src': ['\'self\'', 'data:']
         }
         Talisman(app, content_security_policy=csp)
@@ -47,6 +55,11 @@ def index():
     """Serves the main page for creating a new paste."""
     return render_template('index.html')
 
+@app.route('/about')
+def about():
+    """Serves the about page."""
+    return render_template('about.html')
+
 @app.route('/create', methods=['POST'])
 def create_paste():
     """API endpoint to create a new paste."""
@@ -57,6 +70,7 @@ def create_paste():
     new_paste = Paste(id=generate_id())
     new_paste.encrypted_content = data.get('content')
     new_paste.is_encrypted = data.get('isEncrypted', False)
+    new_paste.language = data.get('language', 'auto')
     new_paste.max_reads = data.get('maxReads')
 
     expires_in_seconds = data.get('expiration')
@@ -98,10 +112,45 @@ def get_paste_data(paste_id):
         abort(404)
 
     # If valid, prepare the content to be returned
-    content_to_return = {
-        'content': paste.encrypted_content,
-        'is_encrypted': paste.is_encrypted
-    }
+    # If the content is not encrypted, apply syntax highlighting if a language is selected
+    if not paste.is_encrypted and paste.language and paste.language != 'text':
+        try:
+            # Get the lexer, either by name or by guessing
+            if paste.language != 'auto':
+                try:
+                    lexer = get_lexer_by_name(paste.language)
+                except:
+                    lexer = guess_lexer(paste.encrypted_content)
+            else:
+                lexer = guess_lexer(paste.encrypted_content)
+            
+            formatter = HtmlFormatter(style='colorful', cssclass='syntax')
+            highlighted_content = highlight(paste.encrypted_content, lexer, formatter)
+            
+            # Sanitize the highlighted content
+            allowed_tags = ['div', 'span', 'pre']
+            allowed_attrs = {'*': ['class']}
+            sanitized_content = bleach.clean(highlighted_content, tags=allowed_tags, attributes=allowed_attrs)
+            
+            content_to_return = {
+                'content': sanitized_content,
+                'is_encrypted': paste.is_encrypted,
+                'is_highlighted': True
+            }
+        except:
+            # If highlighting fails, return the raw content
+            content_to_return = {
+                'content': paste.encrypted_content,
+                'is_encrypted': paste.is_encrypted,
+                'is_highlighted': False
+            }
+    else:
+        # If encrypted or no language is selected, return the raw content
+        content_to_return = {
+            'content': paste.encrypted_content,
+            'is_encrypted': paste.is_encrypted,
+            'is_highlighted': False
+        }
 
     # 3. Increment read count or delete if it's the final read
     if paste.max_reads is not None:
@@ -113,6 +162,16 @@ def get_paste_data(paste_id):
     db.session.commit()
 
     return jsonify(content_to_return)
+
+@app.route('/api/delete/<paste_id>', methods=['DELETE'])
+def delete_paste(paste_id):
+    """API endpoint to delete a paste."""
+    paste = Paste.query.get_or_404(paste_id)
+    
+    db.session.delete(paste)
+    db.session.commit()
+    
+    return jsonify({'status': 'success', 'message': 'Paste deleted successfully.'})
 
 @app.errorhandler(400)
 def bad_request_error(error):

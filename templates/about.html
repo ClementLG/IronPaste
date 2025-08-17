@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content">
+    <h2 class="title is-2">About IronPaste</h2>
+    <p>IronPaste is a secure, zero-knowledge pastebin. This means that all encryption and decryption of your pastes happens directly in your browser. The server only stores the encrypted data and has no way of knowing what the original content is. Your secrets are safe with IronPaste.</p>
+
+    <h3 class="title is-3">How it works</h3>
+    <p>When you create a paste, the content is encrypted using AES-256. The encryption key is generated in your browser and is included in the URL you get, but after a '#' symbol. This part of the URL, called the 'fragment', is never sent to the server. This ensures that only people with the full URL can decrypt and view the paste.</p>
+
+    <h3 class="title is-3">Features</h3>
+    <ul>
+        <li><strong>End-to-End Encryption:</strong> Your data is encrypted and decrypted in your browser.</li>
+        <li><strong>Self-Destructing Pastes:</strong> Set an expiration time or a maximum number of reads for your pastes.</li>
+        <li><strong>Syntax Highlighting:</strong> Automatic language detection and syntax highlighting for code snippets.</li>
+    </ul>
+</div>
+{% endblock %}

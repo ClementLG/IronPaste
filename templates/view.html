@@ -19,8 +19,14 @@
         <p id="error-message" class="help is-danger is-hidden"></p>
     </div>
 
-    <div id="paste-content-area" class="box content is-hidden">
-        <pre><code id="paste-content"></code></pre>
+    <div id="paste-display" class="is-hidden">
+        <div class="has-text-right">
+            <button id="copy-decrypted-btn" class="button is-info mb-2">Copy</button>
+            <button id="delete-btn" class="button is-danger mb-2 is-hidden">Delete</button>
+        </div>
+        <div id="paste-content-area" class="box content">
+            <div id="paste-content"></div>
+        </div>
     </div>
 
     <div id="loading-state">

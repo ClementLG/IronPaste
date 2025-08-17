@@ -14,6 +14,7 @@ class Paste(db.Model):
     id = db.Column(db.String(8), primary_key=True)
     encrypted_content = db.Column(db.Text, nullable=False)
     is_encrypted = db.Column(db.Boolean, nullable=False, default=False)
+    language = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     expires_at = db.Column(db.DateTime, nullable=True)
     max_reads = db.Column(db.Integer, nullable=True)

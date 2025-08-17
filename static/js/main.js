@@ -42,6 +42,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
   }
+
+  const copyDecryptedBtn = document.getElementById('copy-decrypted-btn');
+  if (copyDecryptedBtn) {
+    copyDecryptedBtn.addEventListener('click', () => {
+      const pasteContent = document.getElementById('paste-content');
+      if (pasteContent) {
+        navigator.clipboard.writeText(pasteContent.textContent).then(() => {
+          const originalText = copyDecryptedBtn.textContent;
+          copyDecryptedBtn.textContent = 'Copied!';
+          setTimeout(() => {
+            copyDecryptedBtn.textContent = originalText;
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy text: ', err);
+          alert('Failed to copy content.');
+        });
+      }
+    });
+  }
+
+  const deleteBtn = document.getElementById('delete-btn');
+  if (deleteBtn) {
+    deleteBtn.addEventListener('click', () => {
+      const password = prompt('To delete this paste, please re-enter the password:');
+      if (password) {
+        deletePaste(password);
+      }
+    });
+  }
 });
 
 async function handleCreatePaste() {
@@ -49,11 +78,13 @@ async function handleCreatePaste() {
   const passwordInput = document.getElementById('password-input');
   const expirationSelect = document.getElementById('expiration-select');
   const burnCheckbox = document.getElementById('burn-after-reading-checkbox');
+  const languageSelect = document.getElementById('language-select');
   
   const content = contentInput.value;
   const password = passwordInput.value;
   const expiration = expirationSelect.value;
   const maxReads = burnCheckbox.checked ? 1 : null;
+  const language = languageSelect.value;
 
   if (!content.trim()) {
     alert('Content cannot be empty.');
@@ -75,7 +106,8 @@ async function handleCreatePaste() {
         content: contentToSend,
         expiration: expiration === "0" ? null : parseInt(expiration, 10),
         isEncrypted: isEncrypted,
-        maxReads: maxReads
+        maxReads: maxReads,
+        language: language
       }),
     });
     
@@ -135,7 +167,7 @@ async function loadPaste() {
     if (!pasteId) return;
 
     const loadingState = document.getElementById('loading-state');
-    const pasteContentArea = document.getElementById('paste-content-area');
+    const pasteDisplay = document.getElementById('paste-display');
     const pasteContentEl = document.getElementById('paste-content');
 
     try {
@@ -148,11 +180,16 @@ async function loadPaste() {
         const data = await response.json();
         const content = data.content;
         const isEncrypted = data.is_encrypted;
+        const isHighlighted = data.is_highlighted;
 
         if (!isEncrypted) {
-            pasteContentEl.textContent = content;
+            if (isHighlighted) {
+                pasteContentEl.innerHTML = content;
+            } else {
+                pasteContentEl.innerHTML = '<pre>' + escapeHtml(content) + '</pre>';
+            }
             loadingState.classList.add('is-hidden');
-            pasteContentArea.classList.remove('is-hidden');
+            pasteDisplay.classList.remove('is-hidden');
             return;
         }
         
@@ -165,7 +202,8 @@ async function loadPaste() {
             if (plaintext !== null) {
                 pasteContentEl.textContent = plaintext;
                 loadingState.classList.add('is-hidden');
-                pasteContentArea.classList.remove('is-hidden');
+                pasteDisplay.classList.remove('is-hidden');
+                document.getElementById('delete-btn').classList.remove('is-hidden');
             } else {
                 alert('The key in the URL is incorrect. Please enter the correct password.');
                 window.location.hash = '';
@@ -199,11 +237,67 @@ function showUnlockForm(encryptedContent) {
         if (plaintext !== null) {
             document.getElementById('paste-content').textContent = plaintext;
             unlockForm.classList.add('is-hidden');
-            document.getElementById('paste-content-area').classList.remove('is-hidden');
+            document.getElementById('paste-display').classList.remove('is-hidden');
+            document.getElementById('delete-btn').classList.remove('is-hidden');
         } else {
             errorMessage.textContent = 'Incorrect password. Please try again.';
             errorMessage.classList.remove('is-hidden');
             unlockPasswordInput.focus();
         }
     });
+}
+
+async function deletePaste(password) {
+  const pasteId = document.body.dataset.pasteId;
+  if (!pasteId) {
+    alert('Could not delete paste. Missing ID.');
+    return;
+  }
+
+  // We need to re-verify the password by attempting to decrypt the content with it.
+  // First, fetch the encrypted content again.
+  const contentResponse = await fetch(`/api/get/${pasteId}`);
+  if (!contentResponse.ok) {
+      alert('Could not verify password. Paste may have been deleted or expired.');
+      return;
+  }
+  const data = await contentResponse.json();
+  const encryptedContent = data.content;
+
+  const plaintext = await cryptoUtils.decrypt(encryptedContent, password);
+
+  if (plaintext === null) {
+      alert('Incorrect password. Deletion failed.');
+      return;
+  }
+
+  // If decryption is successful, proceed with deletion.
+  try {
+    const response = await fetch(`/api/delete/${pasteId}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      document.body.innerHTML = '<div class="notification is-success">Paste has been successfully deleted.</div>';
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 3000);
+    } else {
+      throw new Error('Failed to delete the paste.');
+    }
+  } catch (error) {
+    console.error('Deletion failed:', error);
+    alert('An error occurred while deleting the paste.');
+  }
+}
+
+function escapeHtml(text) {
+    const map = {
+        '&': '&',
+        '<': '<',
+        '>': '>',
+        '"': '"',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
