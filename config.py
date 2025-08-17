@@ -8,10 +8,12 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     TESTING = False
+    FORCE_HTTPS = False
 
 class DevelopmentConfig(Config):
     """Development configuration."""
     DEBUG = True
+    FORCE_HTTPS = False
     db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pastes.db')
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
 

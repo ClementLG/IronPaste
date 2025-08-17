@@ -20,23 +20,13 @@ def create_app(config_name='default'):
     
     db.init_app(app)
 
-    # Disable HTTPS forcing in development for Talisman
-    if app.config['DEBUG']:
-        csp = {
-            'default-src': '\'self\'',
-            'style-src-elem': ['\'self\'', 'https://cdnjs.cloudflare.com'],
-            'font-src': ['\'self\'', 'https://cdnjs.cloudflare.com'],
-            'img-src': ['\'self\'', 'data:']
-        }
-        Talisman(app, force_https=False, content_security_policy=csp)
-    else:
-        csp = {
-            'default-src': '\'self\'',
-            'style-src-elem': ['\'self\'', 'https://cdnjs.cloudflare.com'],
-            'font-src': ['\'self\'', 'https://cdnjs.cloudflare.com'],
-            'img-src': ['\'self\'', 'data:']
-        }
-        Talisman(app, content_security_policy=csp)
+    csp = {
+        'default-src': '\'self\'',
+        'style-src-elem': ['\'self\'', 'https://cdnjs.cloudflare.com'],
+        'font-src': ['\'self\'', 'https://cdnjs.cloudflare.com'],
+        'img-src': ['\'self\'', 'data:']
+    }
+    Talisman(app, force_https=app.config.get('FORCE_HTTPS', True), content_security_policy=csp)
 
     return app
 

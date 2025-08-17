@@ -1,0 +1,11 @@
+services:
+  ironpaste:
+    build: .
+    ports:
+      - "5005:5005"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_DEBUG=0
+      - FLASK_CONFIG=production
+      - DATABASE_URL=sqlite:////app/instance/prod.db
