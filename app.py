@@ -10,7 +10,7 @@ from flask_talisman import Talisman
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from pygments.formatters import HtmlFormatter
-from database import db, Paste
+from database import db, Paste, migrate
 from config import config_by_name
 
 def create_app(config_name='default'):
@@ -19,6 +19,7 @@ def create_app(config_name='default'):
     app.config.from_object(config_by_name[config_name])
     
     db.init_app(app)
+    migrate.init_app(app, db)
 
     csp = {
         'default-src': '\'self\'',

@@ -11,5 +11,7 @@ services:
       - DATABASE_URL=sqlite:////app/instance/prod.db
     command: >
       sh -c "mkdir -p instance &&
+             if [ ! -d 'migrations' ]; then flask db init; fi &&
+             flask db migrate -m 'Initial migration' || true &&
              flask db upgrade &&
              gunicorn --bind 0.0.0.0:5005 app:app"
