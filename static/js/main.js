@@ -84,11 +84,7 @@ async function handleCreatePaste() {
     const data = await response.json();
     const pasteId = data.id;
     
-    let resultUrl = `${window.location.origin}/${pasteId}`;
-    if (password) {
-      resultUrl += `#${password}`;
-    }
-
+    const resultUrl = `${window.location.origin}/${pasteId}`;
     displayResult(resultUrl, password);
 
   } catch (error) {
@@ -103,9 +99,10 @@ function displayResult(url, password) {
     const resultUrlInput = document.getElementById('result-url');
     const includePasswordContainer = document.getElementById('include-password-container');
     const includePasswordCheckbox = document.getElementById('include-password-checkbox');
-    
-    if (!pasteForm || !resultDiv || !resultUrlInput || !includePasswordContainer || !includePasswordCheckbox) {
-        console.error("Critical Error: One or more UI elements for displaying the result are missing from index.html. Please check for typos in the element IDs.");
+    const passwordWarning = document.getElementById('password-warning');
+
+    if (!pasteForm || !resultDiv || !resultUrlInput || !includePasswordContainer || !includePasswordCheckbox || !passwordWarning) {
+        console.error("Critical Error: One or more UI elements for displaying the result are missing from index.html.");
         alert("A critical error occurred. Please check the developer console (F12) for details.");
         return;
     }
@@ -116,7 +113,18 @@ function displayResult(url, password) {
 
     if (password && password.length > 0) {
         includePasswordContainer.classList.remove('hidden');
-        includePasswordCheckbox.checked = true;
+        includePasswordCheckbox.checked = false; // Default to not including password
+        passwordWarning.classList.add('hidden');
+
+        includePasswordCheckbox.addEventListener('change', () => {
+            if (includePasswordCheckbox.checked) {
+                resultUrlInput.value = `${url}#${password}`;
+                passwordWarning.classList.remove('hidden');
+            } else {
+                resultUrlInput.value = url;
+                passwordWarning.classList.add('hidden');
+            }
+        });
     } else {
         includePasswordContainer.classList.add('hidden');
     }

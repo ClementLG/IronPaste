@@ -1,2 +1,5 @@
-Flask
-Flask-SQLAlchemy
+Flask==2.2.2
+Flask-SQLAlchemy==2.5.1
+SQLAlchemy==1.4.39
+Flask-Talisman==1.0.0
+Werkzeug==2.2.2

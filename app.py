@@ -5,14 +5,26 @@ import string
 import random
 from datetime import datetime, timedelta, timezone
 from flask import Flask, render_template, request, jsonify, abort
+from flask_talisman import Talisman
 from database import db, Paste
+from config import config_by_name
 
-app = Flask(__name__)
-db_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pastes.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app(config_name='default'):
+    """Create and configure an instance of the Flask application."""
+    app = Flask(__name__)
+    app.config.from_object(config_by_name[config_name])
+    
+    db.init_app(app)
 
-db.init_app(app)
+    # Disable HTTPS forcing in development for Talisman
+    if app.config['DEBUG']:
+        Talisman(app, force_https=False)
+    else:
+        Talisman(app)
+
+    return app
+
+app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 
 def generate_id(length=8):
     """Generates a random, unique alphanumeric ID for a paste."""
@@ -119,4 +131,4 @@ def init_db_command():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run()

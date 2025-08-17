@@ -38,8 +38,11 @@
     <input type="text" id="result-url" readonly>
     
     <div id="include-password-container" class="hidden" style="margin-top: 0.5rem;">
-        <input type="checkbox" id="include-password-checkbox" checked>
-        <label for="include-password-checkbox">Include password in the copied URL</label>
+        <input type="checkbox" id="include-password-checkbox">
+        <label for="include-password-checkbox">Include password in URL (less secure)</label>
+        <p id="password-warning" class="hidden warning-text">
+            Warning: Including the password in the URL is convenient but less secure. It may be stored in browser history or server logs.
+        </p>
     </div>
     
     <button id="copy-btn" style="margin-top: 0.5rem;">Copy URL</button>

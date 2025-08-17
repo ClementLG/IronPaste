@@ -132,3 +132,14 @@ footer {
     color: #95a5a6; 
     font-size: 0.8rem; 
 }
+.warning-text {
+    color: #e67e22;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+#unlock-password {
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
