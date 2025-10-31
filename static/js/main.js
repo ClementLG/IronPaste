@@ -81,6 +81,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (togglePasswordVisibilityBtn) {
     togglePasswordVisibilityBtn.addEventListener('click', handleTogglePasswordVisibility);
   }
+
+  const passwordInput = document.getElementById('password-input');
+  if (passwordInput) {
+    passwordInput.addEventListener('input', () => {
+      const noPasswordWarning = document.getElementById('no-password-warning');
+      if (passwordInput.value.length > 0) {
+        noPasswordWarning.classList.add('is-hidden');
+      }
+    });
+  }
 });
 
 async function handleCreatePaste() {
@@ -89,7 +99,8 @@ async function handleCreatePaste() {
   const expirationSelect = document.getElementById('expiration-select');
   const burnCheckbox = document.getElementById('burn-after-reading-checkbox');
   const languageSelect = document.getElementById('language-select');
-  
+  const noPasswordWarning = document.getElementById('no-password-warning');
+
   const content = contentInput.value;
   const password = passwordInput.value;
   const expiration = expirationSelect.value;
@@ -99,6 +110,16 @@ async function handleCreatePaste() {
   if (!content.trim()) {
     alert('Content cannot be empty.');
     return;
+  }
+
+  if (password.length === 0) {
+    noPasswordWarning.classList.remove('is-hidden');
+    const userConfirmed = confirm('You have not set a password. The content will not be encrypted. Do you want to continue?');
+    if (!userConfirmed) {
+      return;
+    }
+  } else {
+    noPasswordWarning.classList.add('is-hidden');
   }
   
   let contentToSend = content;
