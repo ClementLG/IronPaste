@@ -58,8 +58,20 @@
         <div class="column is-half">
             <div class="field">
                 <label for="password-input" class="label">Password (optional):</label>
-                <div class="control">
-                    <input type="password" id="password-input" class="input" placeholder="Leave blank for a public paste">
+                <div class="field has-addons">
+                    <div class="control is-expanded">
+                        <input type="password" id="password-input" class="input" placeholder="Leave blank for a public paste">
+                    </div>
+                    <div class="control">
+                        <button class="button" id="toggle-password-visibility" aria-label="Toggle password visibility">
+                            <span class="icon is-small">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="control">
+                        <button id="generate-password-btn" class="button is-info">Generate</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -71,6 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  const generatePasswordBtn = document.getElementById('generate-password-btn');
+  if (generatePasswordBtn) {
+    generatePasswordBtn.addEventListener('click', handleGeneratePassword);
+  }
+
+  const togglePasswordVisibilityBtn = document.getElementById('toggle-password-visibility');
+  if (togglePasswordVisibilityBtn) {
+    togglePasswordVisibilityBtn.addEventListener('click', handleTogglePasswordVisibility);
+  }
 });
 
 async function handleCreatePaste() {
@@ -300,4 +310,33 @@ function escapeHtml(text) {
         "'": '&#039;'
     };
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function generateRandomPassword(length) {
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.";
+    let password = "";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+        password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return password;
+}
+
+function handleGeneratePassword() {
+    const passwordInput = document.getElementById('password-input');
+    const passwordLength = parseInt(document.body.dataset.randomPasswordLength, 10);
+    passwordInput.value = generateRandomPassword(passwordLength);
+}
+
+function handleTogglePasswordVisibility() {
+    const passwordInput = document.getElementById('password-input');
+    const icon = document.querySelector('#toggle-password-visibility i');
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
 }

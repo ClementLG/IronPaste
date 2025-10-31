@@ -6,6 +6,7 @@ class Config:
     """Base configuration."""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a_very_secret_key_that_should_be_changed'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    RANDOM_PASSWORD_LENGTH = 15
     DEBUG = False
     TESTING = False
     FORCE_HTTPS = False

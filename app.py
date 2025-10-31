@@ -44,7 +44,7 @@ def generate_id(length=8):
 @app.route('/')
 def index():
     """Serves the main page for creating a new paste."""
-    return render_template('index.html')
+    return render_template('index.html', random_password_length=app.config.get('RANDOM_PASSWORD_LENGTH'))
 
 @app.route('/about')
 def about():
