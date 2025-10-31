@@ -38,7 +38,11 @@ Security is a core principle of IronPaste. Here are the primary security measure
 -   **Content Security Policy (CSP)**: A strict CSP is enforced to mitigate cross-site scripting (XSS) attacks.
 -   **HTML Sanitization**: All HTML content generated (e.g., for syntax highlighting) is sanitized to prevent XSS attacks.
 
-## 🚀 Installation with Docker
+## 📜 Disclaimer
+
+Anyone who chooses to host an instance of IronPaste is solely responsible for the content uploaded by users. Due to the end-to-end encryption for protected pastes, the server administrator has no technical ability to access or moderate the encrypted content. The developers of IronPaste assume no liability for any content posted on third-party instances. It is the responsibility of the instance administrator to manage their service in accordance with local laws.
+
+##  Installation with Docker
 
 1.  **Clone the repository:**
     ```bash
