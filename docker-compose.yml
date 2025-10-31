@@ -9,6 +9,8 @@ services:
       - FLASK_DEBUG=0
       - FLASK_CONFIG=production
       - DATABASE_URL=sqlite:////app/instance/prod.db
+    env_file:
+      - .env
     command: >
       sh -c "mkdir -p instance &&
              if [ ! -d 'migrations' ]; then flask db init; fi &&
