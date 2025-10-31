@@ -288,7 +288,11 @@ async function deletePaste(password) {
     });
 
     if (response.ok) {
-      document.body.innerHTML = '<div class="notification is-success">Paste has been successfully deleted.</div>';
+      const notification = document.createElement('div');
+      notification.className = 'notification is-success';
+      notification.textContent = 'Paste has been successfully deleted.';
+      document.body.innerHTML = ''; // Clear the body
+      document.body.appendChild(notification);
       setTimeout(() => {
         window.location.href = '/';
       }, 3000);

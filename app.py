@@ -124,7 +124,7 @@ def get_paste_data(paste_id):
             
             # Sanitize the highlighted content
             allowed_tags = ['div', 'span', 'pre']
-            allowed_attrs = {'*': ['class']}
+            allowed_attrs = {'span': ['class']}
             sanitized_content = bleach.clean(highlighted_content, tags=allowed_tags, attributes=allowed_attrs)
             
             content_to_return = {
