@@ -1,26 +1,44 @@
-# IronPaste
+<p align="center">
+  <img src="logo_ironpaste.png" alt="IronPaste Logo" width="200"/>
+</p>
+<h1 align="center">IronPaste</h1>
 
-IronPaste is a simple and secure web application for sharing text and code, also known as a "pastebin". It emphasizes data privacy and security through client-side end-to-end encryption.
+<p align="center">
+    <img src="https://img.shields.io/badge/Python-3.11+-blue.svg" alt="Python">
+    <img src="https://img.shields.io/badge/-Flask-grey?style=flat&logo=flask" alt="Flask">
+    <img src="https://img.shields.io/badge/-Docker-grey?logo=docker" alt="Docker">
+  <a href="https://github.com/ClementLG/IronPaste/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/ClementLG/IronPaste" alt="License">
+  </a>
+</p>
 
-## How It Works
+<p align="center">
+  <a href="https://www.buymeacoffee.com/clementlg">
+    <img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee">
+  </a>
+</p>
 
-The application allows users to create "pastes" (pieces of text or code) that can be shared via a unique URL. Key features include:
+IronPaste is a simple, secure, and privacy-focused web application for sharing text and code, often known as a "pastebin." It is designed with a strong emphasis on data security and privacy through robust client-side end-to-end encryption.
 
-*   **Client-Side Encryption**: Pastes can be encrypted in the browser before being sent to the server. The server only stores the encrypted data, which means that no one without the password can read the content.
-*   **Automatic Expiration**: Pastes can be configured to expire after a certain amount of time or after a certain number of reads.
-*   **Syntax Highlighting**: For code pastes, syntax highlighting is automatically applied for better readability.
-*   **Simple API**: A simple RESTful API is available for creating and retrieving pastes.
+## ✨ Features
 
-## Security
+IronPaste allows you to create "pastes"—pieces of text or code—that can be shared via a unique URL. Here are some of its key features:
 
-Security is a fundamental aspect of IronPaste. Here are the main security measures implemented:
+-   **Client-Side Encryption**: Your pastes can be encrypted directly in your browser before being sent to the server. The server only stores the encrypted data, meaning no one can read the content without the password.
+-   **Automatic Expiration**: Pastes can be configured to expire after a specific time or a certain number of reads, ensuring your data doesn't remain accessible forever.
+-   **Syntax Highlighting**: Code pastes are automatically highlighted for improved readability, making it easier to share and review code.
+-   **Simple API**: A straightforward RESTful API is available for creating and retrieving pastes programmatically.
+-   **Dark Mode**: A sleek, modern dark mode is available to reduce eye strain and improve user experience.
 
-*   **End-to-End Encryption**: Encryption is performed in the user's browser using the Web Crypto API (AES-256-GCM). The encryption key is derived from the user's password (using PBKDF2 with 100,000 iterations) and is never sent to the server.
-*   **Content Security Policy (CSP)**: A strict Content Security Policy is enforced to prevent cross-site scripting (XSS) attacks.
-*   **Forced HTTPS**: In production, the application can be configured to force the use of HTTPS for all communications.
-*   **HTML Sanitization**: The generated HTML content (for syntax highlighting) is sanitized to prevent XSS attacks.
+## 🛡️ Security
 
-## Installation with Docker
+Security is a core principle of IronPaste. Here are the primary security measures implemented:
+
+-   **End-to-End Encryption**: Encryption is performed in the user's browser using the **Web Crypto API (AES-256-GCM)**. The encryption key is derived from the user's password (using **PBKDF2 with 250,000 iterations**) and is never transmitted to the server.
+-   **Content Security Policy (CSP)**: A strict CSP is enforced to mitigate cross-site scripting (XSS) attacks.
+-   **HTML Sanitization**: All HTML content generated (e.g., for syntax highlighting) is sanitized to prevent XSS attacks.
+
+## 🚀 Installation with Docker
 
 1.  **Clone the repository:**
     ```bash
@@ -29,7 +47,7 @@ Security is a fundamental aspect of IronPaste. Here are the main security measur
     ```
 
 2.  **Configure environment variables:**
-    Create a `.env` file in the project root and configure the following variables:
+    Create a `.env` file in the project's root directory. For a production environment, set the following variables:
     ```
     FLASK_CONFIG=production
     SECRET_KEY=a_very_long_and_random_secret_key
@@ -41,15 +59,14 @@ Security is a fundamental aspect of IronPaste. Here are the main security measur
     ```
     The application will be accessible at `http://localhost:5000`.
 
-### Configuration Variables
+### ⚙️ Configuration Variables
 
-The application's behavior is controlled by the following environment variables, defined in `config.py`:
+The application's behavior is controlled by the following environment variables, which are defined in `config.py`:
 
-*   `FLASK_CONFIG`: The configuration profile to use (`development` or `production`). Defaults to `development`.
-*   `SECRET_KEY`: A secret key used by Flask to sign sessions and other security-related data. **It is crucial to set a long, random, and secret key in production.**
-*   `DATABASE_URL`: The URL for the database. If not set, a local SQLite database (`pastes.db`) will be created inside the container.
-*   `FORCE_HTTPS`: If set to `True` in production, redirects all HTTP traffic to HTTPS.
+-   `FLASK_CONFIG`: The configuration profile to use (`development` or `production`). When using Docker, it is recommended to set this to `production`.
+-   `SECRET_KEY`: A secret key used by Flask for signing sessions and other security-related data. **It is crucial to set a long, random, and secret key in production.**
+-   `DATABASE_URL`: The connection string for the database. By default, a local SQLite database (`pastes.db`) is used. To use another database like PostgreSQL or MySQL, you must set this variable and install the appropriate driver in the `Dockerfile` and `requirements.txt`. - will be improved in future release
 
-## License
+## 📄 License
 
 This project is licensed under the GPLv3 License. See the [LICENSE](LICENSE) file for more details.
