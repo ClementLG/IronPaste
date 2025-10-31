@@ -2,7 +2,7 @@
 
 import os
 import string
-import random
+import secrets
 from datetime import datetime, timedelta, timezone
 import bleach
 from flask import Flask, render_template, request, jsonify, abort
@@ -37,7 +37,7 @@ def generate_id(length=8):
     """Generates a random, unique alphanumeric ID for a paste."""
     chars = string.ascii_lowercase + string.digits
     while True:
-        paste_id = ''.join(random.choice(chars) for _ in range(length))
+        paste_id = ''.join(secrets.choice(chars) for _ in range(length))
         if not Paste.query.get(paste_id):
             return paste_id
 
@@ -74,7 +74,7 @@ def create_paste():
             expires_at_dt = datetime.now(timezone.utc) + timedelta(seconds=int(expires_in_seconds))
             new_paste.expires_at = expires_at_dt
         except (ValueError, TypeError):
-            pass
+            abort(400, "Invalid expiration time.")
             
     db.session.add(new_paste)
     db.session.commit()
@@ -114,7 +114,7 @@ def get_paste_data(paste_id):
             if paste.language != 'auto':
                 try:
                     lexer = get_lexer_by_name(paste.language)
-                except:
+                except ValueError:
                     lexer = guess_lexer(paste.encrypted_content)
             else:
                 lexer = guess_lexer(paste.encrypted_content)
@@ -124,7 +124,10 @@ def get_paste_data(paste_id):
             
             # Sanitize the highlighted content
             allowed_tags = ['div', 'span', 'pre']
-            allowed_attrs = {'span': ['class']}
+            allowed_attrs = {
+                '*': ['class'],
+                'span': ['style']
+            }
             sanitized_content = bleach.clean(highlighted_content, tags=allowed_tags, attributes=allowed_attrs)
             
             content_to_return = {
@@ -132,7 +135,7 @@ def get_paste_data(paste_id):
                 'is_encrypted': paste.is_encrypted,
                 'is_highlighted': True
             }
-        except:
+        except Exception:
             # If highlighting fails, return the raw content
             content_to_return = {
                 'content': paste.encrypted_content,

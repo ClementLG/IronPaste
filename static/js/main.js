@@ -312,8 +312,17 @@ async function deletePaste(password) {
       const notification = document.createElement('div');
       notification.className = 'notification is-success';
       notification.textContent = 'Paste has been successfully deleted.';
-      document.body.innerHTML = ''; // Clear the body
-      document.body.appendChild(notification);
+      
+      // Hide the main content and display the notification
+      const mainContent = document.querySelector('.section');
+      if (mainContent) {
+        mainContent.innerHTML = '';
+        mainContent.appendChild(notification);
+      } else {
+        document.body.innerHTML = ''; // Fallback
+        document.body.appendChild(notification);
+      }
+
       setTimeout(() => {
         window.location.href = '/';
       }, 3000);
@@ -339,9 +348,11 @@ function escapeHtml(text) {
 
 function generateRandomPassword(length) {
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.";
+    const randomValues = new Uint32Array(length);
+    window.crypto.getRandomValues(randomValues);
     let password = "";
-    for (let i = 0, n = charset.length; i < length; ++i) {
-        password += charset.charAt(Math.floor(Math.random() * n));
+    for (let i = 0; i < length; i++) {
+        password += charset[randomValues[i] % charset.length];
     }
     return password;
 }
