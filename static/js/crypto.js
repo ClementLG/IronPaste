@@ -4,18 +4,19 @@
 
 const cryptoUtils = {
   // Converts a string to an ArrayBuffer.
-  str2ab(str) {
-    const buf = new ArrayBuffer(str.length);
-    const bufView = new Uint8Array(buf);
-    for (let i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return buf;
+  // Converts a Uint8Array to a base64 string.
+  uint8ArrayToBase64(arr) {
+    return btoa(String.fromCharCode.apply(null, arr));
   },
 
-  // Converts an ArrayBuffer to a string.
-  ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
+  // Converts a base64 string to a Uint8Array.
+  base64ToUint8Array(b64) {
+    const byteString = atob(b64);
+    const bytes = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+      bytes[i] = byteString.charCodeAt(i);
+    }
+    return bytes;
   },
 
   /**
@@ -71,7 +72,7 @@ const cryptoUtils = {
     fullMessage.set(iv, salt.length);
     fullMessage.set(encryptedBytes, salt.length + iv.length);
     
-    return btoa(this.ab2str(fullMessage));
+    return this.uint8ArrayToBase64(fullMessage);
   },
 
   /**
@@ -82,7 +83,7 @@ const cryptoUtils = {
    */
   async decrypt(encryptedB64, password) {
     try {
-      const fullMessage = this.str2ab(atob(encryptedB64));
+      const fullMessage = this.base64ToUint8Array(encryptedB64);
       
       const salt = fullMessage.slice(0, 16);
       const iv = fullMessage.slice(16, 28);

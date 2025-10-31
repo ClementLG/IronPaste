@@ -210,7 +210,7 @@ async function loadPaste() {
             const plaintext = await cryptoUtils.decrypt(content, key);
             
             if (plaintext !== null) {
-                pasteContentEl.textContent = plaintext;
+                pasteContentEl.innerHTML = '<pre>' + escapeHtml(plaintext) + '</pre>';
                 loadingState.classList.add('is-hidden');
                 pasteDisplay.classList.remove('is-hidden');
                 document.getElementById('delete-btn').classList.remove('is-hidden');
@@ -245,7 +245,7 @@ function showUnlockForm(encryptedContent) {
         const plaintext = await cryptoUtils.decrypt(encryptedContent, password);
         
         if (plaintext !== null) {
-            document.getElementById('paste-content').textContent = plaintext;
+            document.getElementById('paste-content').innerHTML = '<pre>' + escapeHtml(plaintext) + '</pre>';
             unlockForm.classList.add('is-hidden');
             document.getElementById('paste-display').classList.remove('is-hidden');
             document.getElementById('delete-btn').classList.remove('is-hidden');
