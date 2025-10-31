@@ -58,6 +58,10 @@ def create_paste():
     if not data or 'content' not in data:
         abort(400, "Missing content.")
 
+    # Limit paste size to 1MB
+    if len(data['content'].encode('utf-8')) > 1 * 1024 * 1024:
+        abort(400, "Content exceeds maximum allowed size of 1MB.")
+
     new_paste = Paste(id=generate_id())
     new_paste.encrypted_content = data.get('content')
     new_paste.is_encrypted = data.get('isEncrypted', False)
